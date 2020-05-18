@@ -1,0 +1,2 @@
+https://postman-quick-reference-guide.readthedocs.io/_/downloads/en/latest/pdf/
+https://postman-quick-reference-guide.readthedocs.io/en/latest/dynamic-variables.html

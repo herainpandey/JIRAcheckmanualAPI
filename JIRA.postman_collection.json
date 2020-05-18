@@ -1,0 +1,514 @@
+{
+	"info": {
+		"_postman_id": "854a6da2-e571-406c-bee1-7fa404d40995",
+		"name": "JIRA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Creating a new user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5d37e841-3c9f-4607-ad4d-303a0a695577",
+						"exec": [
+							"var key = JSON.parse(request.data)\r",
+							"var nametobedeleted = postman.setEnvironmentVariable(\"nametobedeleted\",key.name)"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "48db239b-29dc-4470-8383-bca79ce53d62",
+						"exec": [
+							"tests[\"Status code is 201\"]=responseCode.code==201;\r",
+							"var key = JSON.parse(responseBody)\r",
+							"//postman.setEnvironmentVariable(\"email\",key.emailAddress);\r",
+							"postman.setEnvironmentVariable(\"key\",key.key);\r",
+							"var cookie = postman.getResponseCookie(\"JSESSIONID\").value;\r",
+							"var newcookie = \"JSESSIONID=\"+cookie;\r",
+							"console.log(newcookie);\r",
+							"//postman.setEnvironmentVariable(\"newcookie\",newcookie);\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{pass}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{user}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"test17\",\n    \"password\": \"test2\",\n    \"emailAddress\": \"test@atlassian.com\",\n    \"displayName\": \"test of Atlassian\",\n    \"applicationKeys\": [\n        \"jira-core\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base}}/rest/api/2/user",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"rest",
+						"api",
+						"2",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Creating a new issue",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "15688dcd-ee03-480e-8b87-66fc7357a81b",
+						"exec": [
+							"var j = JSON.parse(responseBody)\r",
+							"postman.setEnvironmentVariable(\"bug\",j.key)\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "test1",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "test1",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"fields\": {\n        \"project\": {\n            \"key\": \"HPTES\"\n        },\n        \"summary\": \"This is my second issue\",\n        \"issuetype\": {\n            \"name\": \"Bug\"\n        },\n        \"reporter\": {\n            \"name\": \"Himanshu\"\n        }\n    }\n  \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/rest/api/2/issue",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"rest",
+						"api",
+						"2",
+						"issue"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add a comment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "daba801b-2249-47dc-a263-a09f4f93a020",
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+							"});\r",
+							"\r",
+							"var j = JSON.parse(responseBody)\r",
+							"postman.setEnvironmentVariable(\"id\",j.id)\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"body\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget venenatis elit. Duis eu justo eget augue iaculis fermentum. Sed semper quam laoreet nisi egestas at posuere augue semper.\",\r\n    \"visibility\": {\r\n        \"type\": \"role\",\r\n        \"value\": \"Administrators\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base}}/rest/api/2/issue/{{bug}}/comment",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"rest",
+						"api",
+						"2",
+						"issue",
+						"{{bug}}",
+						"comment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updating comment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cdfe2e4e-407a-436e-bc0e-6f121c1c6e17",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"body\": \"Lorem ipsum dolor sit amet,.\",\r\n    \"visibility\": {\r\n        \"type\": \"role\",\r\n        \"value\": \"Administrators\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base}}/rest/api/2/issue/{{bug}}/comment/{{id}}",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"rest",
+						"api",
+						"2",
+						"issue",
+						"{{bug}}",
+						"comment",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get comments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fe4054ba-c967-429b-9908-ccbaa003faa3",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{pass}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{user}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base}}/rest/api/2/issue/{{bug}}/comment",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"rest",
+						"api",
+						"2",
+						"issue",
+						"{{bug}}",
+						"comment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updating issue fields",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c122bcd4-5f7d-4cb4-ad53-d6f9b54aca12",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"fields\": {\r\n         \"reporter\":{\"name\": \"test2\", \r\n         \"summary\": \"Summary\"},\r\n         \"description\": \"Description\"}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base}}/rest/api/2/issue/{{bug}}",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"rest",
+						"api",
+						"2",
+						"issue",
+						"{{bug}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change assignee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a949e37e-12e3-42dc-b5ec-507c478fcef1",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"test2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base}}/rest/api/2/issue/{{bug}}/assignee",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"rest",
+						"api",
+						"2",
+						"issue",
+						"{{bug}}",
+						"assignee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete comment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "46747bf3-5fcb-42ab-83bf-36dfacc4fe05",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base}}/rest/api/2/issue/{{bug}}/comment/{{id}}",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"rest",
+						"api",
+						"2",
+						"issue",
+						"{{bug}}",
+						"comment",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ce96342b-bdee-4222-918b-480a855027a1",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{pass}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{user}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(204);\r\n});",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base}}/rest/api/2/user?username={{nametobedeleted}}",
+					"host": [
+						"{{base}}"
+					],
+					"path": [
+						"rest",
+						"api",
+						"2",
+						"user"
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "{{nametobedeleted}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
